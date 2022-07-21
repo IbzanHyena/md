@@ -15,7 +15,7 @@ md aims to eventually support the following subset of Markdown:
 - [ ] Links, including with references at the end
 - [ ] Footnotes
 - [ ] Images
-- [ ] Templates
+- [x] Templates
 
 ## Usage
 
