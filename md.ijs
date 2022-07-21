@@ -1,16 +1,31 @@
 NB. HTML Manipulation
 
+NB. Construct an HTML element with specified name, attributes, and contents.
+NB. x: the name and attributes boxed
+NB. the attributes should be a 2xn boxed matrix of strings.
+NB. y: the contents as a string.
+NB. returns: the element as a string
+htmlElementA=: {{
+'x attributes'=. x
+NB. Remove any LF from the tag and save for later
+name=. x -. LF
+eol =. x -. name
+
+NB. Format attributes
+att =. {{ ' ' , y , '=' }}
+val =. {{ '"' , y , '"' }}
+attributes =. ;(att&.>)`(val&.>)"0 attributes
+;('<',name,attributes,'>'),L:0 y,L:0 '</',name,'>',eol
+}}
+
 NB. Construct an HTML element with specified name and contents.
 NB. x: the name as a string
 NB. y: the contents as a string
 NB. returns: the element as a string
-htmlElement=: {{
-NB. Remove any LF from the tag.
-name=. x -. LF
-NB. Save any LF for later.
-eol=. x -. name
-;('<',name,'>'),L:0 y,L:0 '</',name,'>',eol
-}}
+htmlElement=: ] htmlElementA~ a: ;~ [
+
+NB. Construct an anchor (a) element with the specified href and contents.
+htmlAhref=: ] htmlElementA~ 'a' ; [: < 'href' ; [
 
 NB. Construct an HTML table from data.
 NB. x: the column headers in a boxed array of strings
@@ -46,6 +61,8 @@ whichX=: {{ 1 i.~ > ({. @ E.&y)&.> x }}
 NB. Is the match less than the length?
 NB. No matches => i. returns the length
 isX=: ([: # [) > whichX
+
+isWhitespace=: e.&(' ',CRLF,TAB)
 
 NB. Construct an array of boxed strings given by
 NB. start, x # rep, end, where
@@ -123,9 +140,26 @@ sections=. a: -.~ separator nossplit y
 htmlUlist (processSection&.> sections)
 }}
 
-NB. So far, only supports paragraphs, headers, and lists.
-regime=: isHeader + 2 * isUlist
-processSection=: processPara`processHeader`processList @. regime
+countBackticks=: [: (i.&0) 2 = [: +/ [: (,: |.) '`' = ]
+isCodeblock=: 3 <: countBackticks
+
+processCodeblock=:{{
+count=. countBackticks y
+NB. Trim the leading and trailing backticks
+y=. count }. y
+y=. }:^:count y
+NB. Search for any text after the leading backticks before whitespace
+count=. {. I. isWhitespace y
+lang=. count {. y
+NB. trim the language
+y=. count }. y
+y=.('code';<'class';'language-',lang) htmlElementA y
+'pre' htmlElement y
+}}
+
+NB. So far, only supports paragraphs, headers, lists, and codeblocks.
+regime=: isHeader + (2 * isUlist) + 3 * isCodeblock
+processSection=: processPara`processHeader`processList`processCodeblock @. regime
 
 NB. Start by prepending the delimiter.
 NB. Use <;.1 to split into boxed sections everywhere E. is 1
@@ -134,7 +168,7 @@ strsplit=: #@[ }.&.> [ (E. <;.1 ]) ,
 
 NB. Use strsplit to break apart input text into paragraphs (LF LF) and
 NB. line breaks (double space LF).
-chunks=: [: ('  ',LF)&strsplit&.> (LF,LF) strsplit ]
+chunks=: [: ('  ',LF)&strsplit&.> LF2 strsplit ]
 NB. Fill in linebreaks between each inner box
 addBreaks=: >@((>@[,'<br>',LF,>@])/)&.>
 

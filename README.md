@@ -9,7 +9,7 @@ md aims to eventually support the following subset of Markdown:
 - [x] Bold/strong
 - [x] Italic/emphasis
 - [x] Monowidth
-- [ ] Code blocks
+- [x] Code blocks
 - [x] Lists
   - [ ] Nested lists
 - [ ] Tables
