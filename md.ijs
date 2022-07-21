@@ -20,7 +20,18 @@ htmlUlist=: 'ul'&htmlList
 htmlPara=: ('p',LF)&htmlElement
 htmlBr=: ,&'<br>'
 
-processSection=: htmlPara
+headers=: (,. >: i. 6) <@,&' '@# '#'
+htmlHs=: >((,&LF)@('h'&,)@":)&.> >: i.6
+whichHeader=: {{ 1 i.~ > ({. @ E.&y)&.> headers }}
+isHeader=: (# headers) > whichHeader
+processHeader=: {{
+wh=. whichHeader y
+text=. (wh + 2) }. y
+tag=. wh { htmlHs
+tag htmlElement text
+}}
+
+processSection=: htmlPara`processHeader @. isHeader
 
 strsplit=: #@[ }.&.> [ (E. <;.1 ]) ,
 chunks=: [: ('  ',LF)&strsplit&.> (LF,LF) strsplit ]
