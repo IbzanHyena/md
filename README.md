@@ -8,7 +8,7 @@ md aims to eventually support the following subset of Markdown:
 - [x] Line breaks
 - [x] Bold/strong
 - [x] Italic/emphasis
-- [ ] Monowidth
+- [x] Monowidth
 - [ ] Code blocks
 - [ ] Lists
 - [ ] Tables
