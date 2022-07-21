@@ -3,19 +3,19 @@
 Markdown to HTML processor written in J.  
 md aims to eventually support the following subset of Markdown:
 
-[x] Headers
-[x] Paragraphs
-[x] Line breaks
-[ ] Bold/strong
-[ ] Italic/emphasis
-[ ] Monowidth
-[ ] Code blocks
-[ ] Lists
-[ ] Tables
-[ ] Links, including with references at the end
-[ ] Footnotes
-[ ] Images
-[ ] Templates
+- [x] Headers
+- [x] Paragraphs
+- [x] Line breaks
+- [ ] Bold/strong
+- [ ] Italic/emphasis
+- [ ] Monowidth
+- [ ] Code blocks
+- [ ] Lists
+- [ ] Tables
+- [ ] Links, including with references at the end
+- [ ] Footnotes
+- [ ] Images
+- [ ] Templates
 
 ## Usage
 
