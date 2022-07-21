@@ -96,7 +96,7 @@ processHeader =: {{
   tag htmlElement inlineFormatting text
 }}
 
-inlineFormatting=: {{
+inlineFormatting =: {{
   NB. Apply the following formatting delimeters in turn:
   NB. - *** strong + emphasised
   NB. - **  strong
