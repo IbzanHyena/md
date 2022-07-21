@@ -38,6 +38,23 @@ htmlBr=: ,&'<br>'
 
 NB. Markdown Parsing
 
+NB. Some utils
+
+NB. For each element, check if y starts with a member of it.
+NB. Return the index of the first match.
+whichX=: {{ 1 i.~ > ({. @ E.&y)&.> x }}
+NB. Is the match less than the length?
+NB. No matches => i. returns the length
+isX=: ([: # [) > whichX
+
+NB. Construct an array of boxed strings given by
+NB. start, x # rep, end, where
+NB. 'start rep end'=. y
+reps=. {{
+'start rep end'=. y
+(,. x) <@,~&start@,&end@# rep
+}}
+
 NB. These are from the J wiki
 NB. https://code.jsoftware.com/wiki/Essays/Non-Overlapping_Substrings
 NB. https://code.jsoftware.com/wiki/Phrases/Strings#nossplit
@@ -46,24 +63,19 @@ nossplit=: #@[ }.&.> [ (nos <;.1 ]) ,
 
 NB. The valid start-of-line characters for a Markdown header.
 NB. i.e. '# ', '## ', etc.
-headers=: (,. >: i. 6) <@,&' '@# '#'
+headers=: (>: i. 6) reps '';'#';' '
 NB. The HTML tag names for different headers.
 NB. i.e. h1LF, h2,LF, etc.
 htmlHs=: >((,&LF)@('h'&,)@":)&.> >: i.6
-NB. For each header, see if header E. y starts with a 1.
-NB. Unbox the list and get the index of the first 1.
-whichHeader=: {{ 1 i.~ > ({. @ E.&y)&.> headers }}
-NB. We have a header if i. returns an in-bounds index.
-isHeader=: (# headers) > whichHeader
+whichHeader=: headers&whichX
+isHeader=: headers&isX
+
 NB. Convert a line of Markdown text into an HTML header.
 processHeader=: {{
-NB. Index of the header.
 wh=. whichHeader y
-NB. Remove the header from the start of the line.
+NB. Remove the header characters from the start of the line.
 text=. (wh + 2) }. y
-NB. Retrieve the HTML tag.
 tag=. wh { htmlHs
-NB. Construct the element.
 tag htmlElement text
 }}
 
@@ -84,6 +96,7 @@ both=: strong@em
 code=: 'code'&htmlElement
 runTemplate=: code @ ": @ ".
 apply=. {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
+
 y=. '***' both apply y
 y=. '**' strong apply y
 y=. '~~' 'del'&htmlElement apply y
@@ -97,14 +110,32 @@ y=. '%%%' runTemplate apply y
 
 processPara=: htmlPara@inlineFormatting
 
-NB. So far, only supports headers and paragraphs.
-processSection=: processPara`processHeader @. isHeader
+NB. Allow dashes and asterisks
+ulists=: ((i. 4) reps '';' ';'- ') , ((i. 4) reps '';' ';'* ')
+whichUlist=: ulists&whichX
+isUlist=: ulists&isX
+
+NB. Similar to processHeader
+processList=: {{
+wl=. whichUlist y
+separator=. wl {:: ulists
+sections=. a: -.~ separator nossplit y
+htmlUlist (processSection&.> sections)
+}}
+
+NB. So far, only supports paragraphs, headers, and lists.
+regime=: isHeader + 2 * isUlist
+processSection=: processPara`processHeader`processList @. regime
 
 NB. Start by prepending the delimiter.
 NB. Use <;.1 to split into boxed sections everywhere E. is 1
 NB. Then use #@[ }.&.> to remove the delimiter from each box.
 strsplit=: #@[ }.&.> [ (E. <;.1 ]) ,
+
+NB. Use strsplit to break apart input text into paragraphs (LF LF) and
+NB. line breaks (double space LF).
 chunks=: [: ('  ',LF)&strsplit&.> (LF,LF) strsplit ]
+NB. Fill in linebreaks between each inner box
 addBreaks=: >@((>@[,'<br>',LF,>@])/)&.>
 
 markdown=: {{ LF joinstring processSection&.> a:-.~ addBreaks chunks y }}

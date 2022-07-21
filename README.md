@@ -10,7 +10,8 @@ md aims to eventually support the following subset of Markdown:
 - [x] Italic/emphasis
 - [x] Monowidth
 - [ ] Code blocks
-- [ ] Lists
+- [x] Lists
+  - [ ] Nested lists
 - [ ] Tables
 - [ ] Links, including with references at the end
 - [ ] Footnotes
