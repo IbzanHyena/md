@@ -26,4 +26,4 @@ strsplit=: #@[ }.&.> [ (E. <;.1 ]) ,
 chunks=: [: ('  ',LF)&strsplit&.> (LF,LF) strsplit ]
 addBreaks=: >@((>@[,'<br>',LF,>@])/)&.>
 
-markdown=: {{ LF joinstring processSection each addBreaks chunks y }}
+markdown=: {{ LF joinstring processSection&.> a:-.~ addBreaks chunks y }}
