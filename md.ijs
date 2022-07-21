@@ -75,20 +75,20 @@ NB. - ~~  deleted
 NB. - __  underlined
 NB. - *   emphasised
 NB. - _   emphasised
+NB. - `   code
 
 strong=: 'strong'&htmlElement
 em=: 'em'&htmlElement
 both=: strong@em
-underline=: 'u'&htmlElement
-del=: 'del'&htmlElement
 
 apply=. {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
 y=. '***' both apply y
 y=. '**' strong apply y
-y=. '~~' del apply y
-y=. '__' underline apply y
+y=. '~~' 'del'&htmlElement apply y
+y=. '__' 'u'&htmlElement apply y
 y=. '*' em apply y
 y=. '_' em apply y
+y=. '`' 'code'&htmlElement apply y
 ;y
 }}
 
