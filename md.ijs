@@ -69,7 +69,6 @@ tag htmlElement text
 
 inlineFormatting=: {{
 NB. Apply the following formatting delimeters in turn:
-NB. - %%% template
 NB. - *** strong + emphasised
 NB. - **  strong
 NB. - ~~  deleted
@@ -77,20 +76,22 @@ NB. - __  underlined
 NB. - *   emphasised
 NB. - _   emphasised
 NB. - `   code
+NB. - %%% template
 
 strong=: 'strong'&htmlElement
 em=: 'em'&htmlElement
 both=: strong@em
-
+code=: 'code'&htmlElement
+runTemplate=: code @ ": @ ".
 apply=. {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
-y=. '%%%' ('code'&htmlElement @ ": @ ".) apply y
 y=. '***' both apply y
 y=. '**' strong apply y
 y=. '~~' 'del'&htmlElement apply y
 y=. '__' 'u'&htmlElement apply y
 y=. '*' em apply y
 y=. '_' em apply y
-y=. '`' 'code'&htmlElement apply y
+y=. '`' code apply y
+y=. '%%%' runTemplate apply y
 ;y
 }}
 
