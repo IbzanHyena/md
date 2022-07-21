@@ -93,7 +93,7 @@ processHeader =: {{
   NB. Remove the header characters from the start of the line.
   text =. (wh + 2) }. y
   tag =. wh { htmlHs
-  tag htmlElement text
+  tag htmlElement inlineFormatting text
 }}
 
 inlineFormatting=: {{
