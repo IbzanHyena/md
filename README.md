@@ -13,7 +13,7 @@ md aims to eventually support the following subset of Markdown:
 - [x] Lists
   - [ ] Nested lists
 - [ ] Tables
-- [ ] Links, including with references at the end
+- [x] Links, including with references at the end
 - [ ] Footnotes
 - [ ] Images
 - [x] Templates

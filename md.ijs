@@ -1,3 +1,5 @@
+require 'regex'
+
 NB. HTML Manipulation
 
 NB. Construct an HTML element with specified name, attributes, and contents.
@@ -173,4 +175,49 @@ chunks =: [: ('  ',LF)&strsplit&.> LF2 strsplit ]
 NB. Fill in linebreaks between each inner box
 addBreaks =: >@((>@[,'<br>',LF,>@])/)&.>
 
-markdown =: {{ LF joinstring processSection&.> a:-.~ addBreaks chunks toJ y }}
+
+refrx =: rxcomp '^\s{0,3}\[(.+)\] {0,3}\: ?(.+)$'
+rxextract =: {{ (] rxfrom~ m ({ "2) x rxmatches ]) y }}
+isRef =: refrx&rxeq
+
+parseRef =: {{
+  'label dest' =. , refrx 1 2 rxextract y
+  label ; dest
+}}
+
+splitReferences =: {{
+  lines =. LF strsplit y
+  refLines =. ; isRef&.> lines
+  refs =. lines #~ refLines
+  lines =. LF joinstring lines #~ -. refLines
+  refs =. _2 ]\ ; parseRef&.> refs
+
+  refs ; lines
+}}
+
+inlinelinkrx =: rxcomp '\[(.+)\]\((.+)\)'
+reflinkrx =: rxcomp '\[(.+)\]\[(.+)\]'
+processLinks =: {{
+  NB. Use rxapply to apply a verb to each match within a substring
+  makeInline =: {{ (>@[ htmlAhref >@])/ , inlinelinkrx 2 1 rxextract y }}
+  makeRef =: {{
+    'name ref' =. , reflinkrx 1 2 rxextract y
+    dest =. ({:"1 x) {::~ ({."1 x) i. <ref
+    dest htmlAhref name
+  }}
+
+  y =. inlinelinkrx makeInline rxapply y
+  reflinkrx x&makeRef rxapply y
+}}
+
+markdown =: {{
+  NB. Pre-process
+  y =. toJ y
+  NB. Split lines into references and normal lines
+  'references lines' =. splitReferences y
+  NB. Apply formatting
+  lines =. processSection&.> a:-.~ addBreaks chunks lines
+  NB. Fill in links
+  lines =. references processLinks&.(a:`>) lines
+  LF joinstring lines
+}}
