@@ -177,14 +177,16 @@ addBreaks =: >@((>@[,'<br>',LF,>@])/)&.>
 
 
 refrx =: rxcomp '^\s{0,3}\[(.+)\] {0,3}\: ?(.+)$'
+NB. Extract the m groups of regex x from string y
 rxextract =: {{ (] rxfrom~ m ({ "2) x rxmatches ]) y }}
 isRef =: refrx&rxeq
 
-parseRef =: {{
-  'label dest' =. , refrx 1 2 rxextract y
-  label ; dest
-}}
+parseRef =: [: , refrx 1 2 rxextract ]
 
+NB. Split a string into link references and the rest of the text
+NB. Preserve the order of both
+NB. y: the string to split
+NB. returns: the references and remaining text, as a boxed array
 splitReferences =: {{
   lines =. LF strsplit y
   refLines =. ; isRef&.> lines
@@ -197,6 +199,8 @@ splitReferences =: {{
 
 inlinelinkrx =: rxcomp '\[(.+)\]\((.+)\)'
 reflinkrx =: rxcomp '\[(.+)\]\[(.+)\]'
+
+NB. Replace links in text with HTML hyperlinks
 processLinks =: {{
   NB. Use rxapply to apply a verb to each match within a substring
   makeInline =: {{ (>@[ htmlAhref >@])/ , inlinelinkrx 2 1 rxextract y }}
