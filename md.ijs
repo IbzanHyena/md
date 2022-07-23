@@ -4,7 +4,8 @@ NB. HTML Manipulation
 
 NB. Construct an HTML element with specified name, attributes, and contents.
 NB. x: the name and attributes boxed
-NB. the attributes should be a 2xn boxed matrix of strings.
+NB. the attributes should be an even boxed matrix of strings of alternating
+NB. attributes and values.
 NB. y: the contents as a string.
 NB. returns: the element as a string
 htmlElementA =: {{
@@ -95,7 +96,9 @@ processHeader =: {{
   NB. Remove the header characters from the start of the line.
   text =. (wh + 2) }. y
   tag =. wh { htmlHs
-  tag htmlElement inlineFormatting text
+  id =. tolower text
+  html =. tag htmlElement inlineFormatting text
+  ('a'; <'id' ; id ; 'href' ; '#',id) htmlElementA html
 }}
 
 inlineFormatting =: {{
