@@ -18,7 +18,12 @@ md aims to eventually support the following subset of Markdown:
 - [ ] Images
 - [x] Templates
 
+## Installation
+
+Make sure to install [relimport](https://github.com/IbzanHyena/relimport) first.
+md can then be installed anywhere.
+
 ## Usage
 
-Clone the repo and run with `jconsole run.ijs < file.md` to process a single file into HTML.
+Run`jconsole run.ijs < file.md` to process a single file into HTML.
 
