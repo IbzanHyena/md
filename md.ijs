@@ -96,9 +96,9 @@ processHeader =: {{
   NB. Remove the header characters from the start of the line.
   text =. (wh + 2) }. y
   tag =. wh { htmlHs
-  id =. tolower text
-  html =. tag htmlElement inlineFormatting text
-  ('a'; <'id' ; id ; 'href' ; '#',id) htmlElementA html
+  id =. LF -.~ tolower text
+  anchor =. ('a'; <'id' ; id ; 'href' ; '#',id) htmlElementA inlineFormatting text
+  (tag ; <'class';'header') htmlElementA anchor
 }}
 
 inlineFormatting =: {{
@@ -179,7 +179,7 @@ NB. Fill in linebreaks between each inner box
 addBreaks =: >@((>@[,'<br>',LF,>@])/)&.>
 
 
-refrx =: rxcomp '^\s{0,3}\[(.+)\] {0,3}\: ?(.+)$'
+refrx =: rxcomp '^\s{0,3}\[(.+?)\] {0,3}\: ?(.+)$'
 NB. Extract the m groups of regex x from string y
 rxextract =: {{ (] rxfrom~ m ({ "2) x rxmatches ]) y }}
 isRef =: refrx&rxeq
@@ -200,8 +200,8 @@ splitReferences =: {{
   refs ; lines
 }}
 
-inlinelinkrx =: rxcomp '\[(.+)\]\((.+)\)'
-reflinkrx =: rxcomp '\[(.+)\]\[(.+)\]'
+inlinelinkrx =: rxcomp '\[(.+?)\]\((.+?)\)'
+reflinkrx =: rxcomp '\[(.+?)\]\[(.+?)\]'
 
 NB. Replace links in text with HTML hyperlinks
 processLinks =: {{
