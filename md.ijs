@@ -101,6 +101,9 @@ processHeader =: {{
   (tag ; <'class';'header') htmlElementA anchor
 }}
 
+applyBetweenDelimiters =: {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
+runTemplate =: 'code'&htmlElement @ ": @ ".
+
 inlineFormatting =: {{
   NB. Apply the following formatting delimeters in turn:
   NB. - *** strong + emphasised
@@ -118,7 +121,7 @@ inlineFormatting =: {{
   code   =: 'code'&htmlElement
 
   runTemplate =: code @ ": @ ".
-  apply =. {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
+  apply =. applyBetweenDelimiters
 
   y =. '***' both             apply y
   y =. '**'  strong           apply y
@@ -159,6 +162,7 @@ processCodeblock =: {{
   lang  =. count {. y
   NB. trim the language
   y =. count }. y
+  y =. '%%%' runTemplate applyBetweenDelimiters y
   y =. ('code';<'class';'language-',lang) htmlElementA y
   'pre' htmlElement y
 }}
