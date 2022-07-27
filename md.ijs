@@ -101,8 +101,9 @@ processHeader =: {{
   (tag ; <'class';'header') htmlElementA anchor
 }}
 
+trimTrailingLF =: ] {.~ 1 i.~ [: *./\. LF = ]
 applyBetweenDelimiters =: {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
-runTemplate =: 'code'&htmlElement @ ": @ ".
+runTemplate =: 'code'&htmlElement @ trimTrailingLF @ ,/ @ |: @ (,&LF) @ |: @ ": @ ".
 
 inlineFormatting =: {{
   NB. Apply the following formatting delimeters in turn:
