@@ -122,7 +122,6 @@ inlineFormatting =: {{
   both   =: strong@em
   code   =: 'code'&htmlElement
 
-  runTemplate =: code @ ": @ ".
   apply =. applyBetweenDelimiters
 
   y =. '***' both             apply y
