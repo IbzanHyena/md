@@ -106,33 +106,42 @@ applyBetweenDelimiters =: {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
 flattenChars =: {{ ([: ,/"2 ,&LF"1)^:(<: # $ y) y }}
 runTemplate =: 'code'&htmlElement @ trimTrailingLF @ flattenChars @ ": @ ".
 
+backtickrx =: rxcomp '`.+?`'
+dbacktickrx =: rxcomp '``.+?``'
+
 inlineFormatting =: {{
-  NB. Apply the following formatting delimeters in turn:
-  NB. - *** strong + emphasised
-  NB. - **  strong
-  NB. - ~~  deleted
-  NB. - __  underlined
-  NB. - *   emphasised
-  NB. - _   emphasised
-  NB. - `   code
-  NB. - %%% template
+  NB. First search for double backtick and single
+  NB. backticks, and turn them into code blocks. Apply
+  NB. normal inline formatting to the rest.
 
   strong =: 'strong'&htmlElement
   em     =: 'em'&htmlElement
   both   =: strong@em
   code   =: 'code'&htmlElement
 
-  apply =. applyBetweenDelimiters
+  NB. This is going to be a bit of a mess...
+  
+  prest =: {{
+    apply =. applyBetweenDelimiters
 
-  y =. '***' both             apply y
-  y =. '**'  strong           apply y
-  y =. '~~' 'del'&htmlElement apply y
-  y =. '__' 'u'&htmlElement   apply y
-  y =. '*'   em               apply y
-  y =. '_'   em               apply y
-  y =. '`'   code             apply y
-  y =. '%%%' runTemplate      apply y
-  ;y
+    y =. '***' both             apply y
+    y =. '**'  strong           apply y
+    y =. '~~' 'del'&htmlElement apply y
+    y =. '__' 'u'&htmlElement   apply y
+    y =. '*'   em               apply y
+    y =. '_'   em               apply y
+    y =. '%%%' runTemplate      apply y
+    ;y
+  }}
+
+  NB. Remove leading + trailing 2 chars and then wrap in code
+  dbt =: code @ }. @ }. @ }: @ }:
+  NB. Remove leading + trailing char and then wrap in code
+  bt =: code @ }. @ }:
+
+  pbt =: {{ ; (prest&.>)`(bt&.>)"0 (backtickrx&rxmatches rxcut ]) y }}
+  pdbt =: {{ ; (pbt&.>)`(dbt&.>)"0 (dbacktickrx&rxmatches rxcut ]) y }}
+  y =. pdbt y
 }}
 
 processPara =: htmlPara @ inlineFormatting
