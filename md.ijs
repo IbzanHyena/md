@@ -218,7 +218,7 @@ splitReferences =: {{
 }}
 
 inlineimgrx =: rxcomp '!\[(.+?)\]\((.+?)\)'
-refimgrx =: rxcomp '!\[(.+?)\]\[(.+?)\]''
+refimgrx =: rxcomp '!\[(.+?)\]\[(.+?)\]'
 inlinelinkrx =: rxcomp '\[(.+?)\]\((.+?)\)'
 reflinkrx =: rxcomp '\[(.+?)\]\[(.+?)\]'
 
