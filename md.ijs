@@ -223,7 +223,12 @@ processLinks =: {{
   makeInline =: {{ (>@[ htmlAhref >@])/ , inlinelinkrx 2 1 rxextract y }}
   makeRef =: {{
     'name ref' =. , reflinkrx 1 2 rxextract y
-    dest =. ({:"1 x) {::~ ({."1 x) i. <ref
+    try.
+      dest =. ({:"1 x) {::~ ({."1 x) i. <ref
+    catch.
+      echo 'Could not find reference ' , ref
+      throw.
+    end.
     dest htmlAhref name
   }}
 
