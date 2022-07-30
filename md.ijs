@@ -104,7 +104,10 @@ processHeader =: {{
 trimTrailingLF =: ] {.~ 1 i.~ [: *./\. LF = ]
 applyBetweenDelimiters =: {{ ;(]&.>)`(u&.>)"0 (x nossplit y) }}
 flattenChars =: {{ ([: ,/"2 ,&LF"1)^:(<: # $ y) y }}
-runTemplate =: 'code'&htmlElement @ trimTrailingLF @ flattenChars @ ": @ ".
+NB. Replace J's hacked-in box drawing characters with Unicode
+boxChars =: (16{a.);'┌';(17{a.);'┬';(18{a.);'┐';(19{a.);'├';(20{a.);'┼';(21{a.);'┤';(22{a.);'└';(23{a.);'┴';(24{a.);'┘';(25{a.);'│';(26{a.);'─'
+replaceBoxes =: boxChars&stringreplace
+runTemplate =: 'code'&htmlElement @ trimTrailingLF @ replaceBoxes @ flattenChars @ ": @ ".
 
 backtickrx =: rxcomp '`.+?`'
 dbacktickrx =: rxcomp '``.+?``'
@@ -214,6 +217,8 @@ splitReferences =: {{
   refs ; lines
 }}
 
+inlineimgrx =: rxcomp '!\[(.+?)\]\((.+?)\)'
+refimgrx =: rxcomp '!\[(.+?)\]\[(.+?)\]''
 inlinelinkrx =: rxcomp '\[(.+?)\]\((.+?)\)'
 reflinkrx =: rxcomp '\[(.+?)\]\[(.+?)\]'
 
