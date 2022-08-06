@@ -90,13 +90,18 @@ htmlHs      =: >((,&LF)@('h'&,)@":)&.> >: i.6
 whichHeader =: headers&whichX
 isHeader    =: headers&isX
 
+NB. Sanitise the text in a header to use as an id
+keepchars =: 'abcdefghijklmnopqrstuvwxyz01234567890-'
+intersect =: e. # [
+sanitise  =: intersect&keepchars @ tolower
+
 NB. Convert a line of Markdown text into an HTML header.
 processHeader =: {{
   wh =. whichHeader y
   NB. Remove the header characters from the start of the line.
   text =. (wh + 2) }. y
   tag =. wh { htmlHs
-  id =. LF -.~ tolower text
+  id =. sanitise LF -.~ tolower text
   anchor =. ('a'; <'id' ; id ; 'href' ; '#',id) htmlElementA inlineFormatting text
   (tag ; <'class';'header') htmlElementA anchor
 }}
