@@ -112,7 +112,7 @@ flattenChars =: {{ ([: ,/"2 ,&LF"1)^:(<: # $ y) y }}
 NB. Replace J's hacked-in box drawing characters with Unicode
 boxChars =: (16{a.);'┌';(17{a.);'┬';(18{a.);'┐';(19{a.);'├';(20{a.);'┼';(21{a.);'┤';(22{a.);'└';(23{a.);'┴';(24{a.);'┘';(25{a.);'│';(26{a.);'─'
 replaceBoxes =: boxChars&stringreplace
-runTemplate =: 'code'&htmlElement @ trimTrailingLF @ replaceBoxes @ flattenChars @ ": @ ".
+runTemplate =: trimTrailingLF @: replaceBoxes @: flattenChars @: ": @: ".
 
 backtickrx =: rxcomp '`.+?`'
 dbacktickrx =: rxcomp '``.+?``'
@@ -124,7 +124,7 @@ inlineFormatting =: {{
 
   strong =: 'strong'&htmlElement
   em     =: 'em'&htmlElement
-  both   =: strong@em
+  both   =: strong@:em
   code   =: 'code'&htmlElement
 
   NB. This is going to be a bit of a mess...
@@ -142,10 +142,12 @@ inlineFormatting =: {{
     ;y
   }}
 
+  NB. Process templates inside inline code blocks
+  inlineCode =. code @: ('%%%'&(runTemplate applyBetweenDelimiters))
   NB. Remove leading + trailing 2 chars and then wrap in code
-  dbt =: code @ }. @ }. @ }: @ }:
+  dbt =: inlineCode @: }.^:2 @: }:^:2 f.
   NB. Remove leading + trailing char and then wrap in code
-  bt =: code @ }. @ }:
+  bt =: inlineCode @: }. @: }: f.
 
   pbt =: {{ ; (prest&.>)`(bt&.>)"0 (backtickrx&rxmatches rxcut ]) y }}
   pdbt =: {{ ; (pbt&.>)`(dbt&.>)"0 (dbacktickrx&rxmatches rxcut ]) y }}
