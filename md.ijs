@@ -93,7 +93,7 @@ isHeader    =: headers&isX
 NB. Sanitise the text in a header to use as an id
 keepchars =: 'abcdefghijklmnopqrstuvwxyz01234567890-'
 intersect =: e. # [
-sanitise  =: intersect&keepchars @: ((' ';'-'&)stringreplace) @: tolower
+sanitise  =: intersect&keepchars @: ((' ';'-')&stringreplace) @: tolower
 
 NB. Convert a line of Markdown text into an HTML header.
 processHeader =: {{
