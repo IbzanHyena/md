@@ -145,7 +145,7 @@ inlineFormatting =: {{
   NB. Process templates inside inline code blocks
   inlineCode =. code @: ('%%%'&(runTemplate applyBetweenDelimiters))
   NB. Remove leading + trailing 2 chars and then wrap in code
-  dbt =: inlineCode @: }.^:2 @: }:^:2 f.
+  dbt =: inlineCode @: (}.^:2) @: (}:^:2) f.
   NB. Remove leading + trailing char and then wrap in code
   bt =: inlineCode @: }. @: }: f.
 
