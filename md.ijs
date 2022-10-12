@@ -187,9 +187,12 @@ processCodeblock =: {{
   'pre' htmlElement y
 }}
 
-NB. So far, only supports paragraphs, headers, lists, and codeblocks.
-regime =: isHeader + (2 * isUlist) + 3 * isCodeblock
-processSection =: processPara`processHeader`processList`processCodeblock @. regime
+isAside =: {. @: ('>>> '&E.)
+processAside =: ('blockquote';<'class';'aside')&htmlElementA @: processPara @: (4&}.)
+
+NB. So far, only supports paragraphs, headers, lists, codeblocks, and asides.
+regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + 4 * isAside
+processSection =: processPara`processHeader`processList`processCodeblock`processAside @. regime
 
 NB. Start by prepending the delimiter.
 NB. Use <;.1 to split into boxed sections everywhere E. is 1
