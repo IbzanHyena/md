@@ -112,7 +112,7 @@ flattenChars =: {{ ([: ,/"2 ,&LF"1)^:(<: # $ y) y }}
 NB. Replace J's hacked-in box drawing characters with Unicode
 boxChars =: (16{a.);'┌';(17{a.);'┬';(18{a.);'┐';(19{a.);'├';(20{a.);'┼';(21{a.);'┤';(22{a.);'└';(23{a.);'┴';(24{a.);'┘';(25{a.);'│';(26{a.);'─'
 replaceBoxes =: boxChars&stringreplace
-runTemplate =: trimTrailingLF @: replaceBoxes @: flattenChars @: ": @: ".
+runTemplate =: trimTrailingLF @: replaceBoxes @: flattenChars @: ": @: (". :: (13!:12 @: (''"_)))
 
 backtickrx =: rxcomp '`.+?`'
 dbacktickrx =: rxcomp '``.+?``'
