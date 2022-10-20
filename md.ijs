@@ -227,10 +227,10 @@ splitReferences =: {{
   refs ; lines
 }}
 
-inlineimgrx =: rxcomp '!\[(.+?)\]\((.+?)\)'
-refimgrx =: rxcomp '!\[(.+?)\]\[(.+?)\]'
-inlinelinkrx =: rxcomp '\[(.+?)\]\((.+?)\)'
-reflinkrx =: rxcomp '\[(.+?)\]\[(.+?)\]'
+inlineimgrx =: rxcomp '!\[(.*?)\]\((.+?)\)'
+refimgrx =: rxcomp '!\[(.*?)\]\[(.+?)\]'
+inlinelinkrx =: rxcomp '(?<!!)\[(.+?)\]\((.+?)\)'
+reflinkrx =: rxcomp '(?<!!)\[(.+?)\]\[(.+?)\]'
 
 NB. Replace links in text with HTML hyperlinks
 processLinks =: {{
@@ -246,7 +246,12 @@ processLinks =: {{
     end.
     dest htmlAhref name
   }}
+  makeImg =: {{
+    'src alt' =. , inlineimgrx 2 1 rxextract y
+    ('img';<'src';src;'alt';alt) htmlElementA ''
+  }}
 
+  y =. inlineimgrx makeImg rxapply y
   y =. inlinelinkrx makeInline rxapply y
   reflinkrx x&makeRef rxapply y
 }}
