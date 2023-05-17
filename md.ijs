@@ -1,5 +1,8 @@
 require 'regex'
 
+NB. Global state - environment variables
+INTERNAL_DOMAIN =: ''"_^:(0&-:) getenv 'MD_INTERNAL_DOMAIN'
+
 NB. HTML Manipulation
 
 NB. Construct an HTML element with specified name, attributes, and contents.
@@ -28,7 +31,12 @@ NB. returns: the element as a string
 htmlElement =: ] htmlElementA~ a: ;~ [
 
 NB. Construct an anchor (a) element with the specified href and contents.
-htmlAhref =: ] htmlElementA~ 'a' ; [: < 'href' ; [
+htmlAhref =: {{
+  class =. ('external-link';'internal-link') {~ (x -.@:-: '') *. {. INTERNAL_DOMAIN E. x
+  y htmlElementA~ 'a' ; < 'href' ; x ; 'class' ; class
+}}
+
+NB. htmlAhref =: ] htmlElementA~ 'a' ; [: < 'href' ; [
 
 NB. Construct an HTML table from data.
 NB. x: the column headers in a boxed array of strings
