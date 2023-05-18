@@ -32,7 +32,9 @@ htmlElement =: ] htmlElementA~ a: ;~ [
 
 NB. Construct an anchor (a) element with the specified href and contents.
 htmlAhref =: {{
-  class =. ('external-link';'internal-link') {~ (INTERNAL_DOMAIN -.@:-: '') *. {. INTERNAL_DOMAIN E. x
+  NB. x starts with a # or a /, or INTERNAL_DOMAIN and INTERNAL_DOMAIN is not empty
+  internal =. ('#/' e.~ {. x) +. (INTERNAL_DOMAIN -.@:-: '') *. {. INTERNAL_DOMAIN E. x
+  class =. ('external-link';'internal-link') {~ internal
   y htmlElementA~ 'a' ; < 'href' ; x ; 'class' ; class
 }}
 
