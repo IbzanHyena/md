@@ -91,6 +91,8 @@ NB. https://code.jsoftware.com/wiki/Phrases/Strings#nossplit
 nos =: i.@#@] e. #@[ ({ ~^:a:&0@(,&_1)@(] I. +) { _1 ,~ ]) I.@E.
 nossplit =: #@[ }.&.> [ (nos <;.1 ]) ,
 
+split1 =: (] ({.~ ; [ }.~ >:@:]) [: {. [: I. E.)
+
 NB. The valid start-of-line characters for a Markdown header.
 NB. i.e. '# ', '## ', etc.
 headers =: (>: i. 6) reps '';'#';' '
@@ -200,9 +202,18 @@ processCodeblock =: {{
 isAside =: {. @: ('>>> '&E.)
 processAside =: ('blockquote';<'class';'aside')&htmlElementA @: processPara @: (4&}.)
 
+isDetails =: {. @: ('!!! '&E.)
+processDetails =: {{
+  y =. 4 }. y
+  'summary body' =. LF split1 y
+  summary =. 'summary' htmlElement inlineFormatting summary
+  body =. processPara body
+  'details' htmlElement summary , body
+}}
+
 NB. So far, only supports paragraphs, headers, lists, codeblocks, and asides.
-regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + 4 * isAside
-processSection =: processPara`processHeader`processList`processCodeblock`processAside @. regime
+regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + (4 * isAside) + 5 * isDetails
+processSection =: processPara`processHeader`processList`processCodeblock`processAside`processDetails @. regime
 
 NB. Start by prepending the delimiter.
 NB. Use <;.1 to split into boxed sections everywhere E. is 1
