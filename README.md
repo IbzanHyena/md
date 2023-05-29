@@ -14,9 +14,12 @@ md aims to eventually support the following subset of Markdown:
   - [ ] Nested lists
 - [ ] Tables
 - [x] Links, including with references at the end
+  - [ ] print layout version
 - [ ] Footnotes
-- [ ] Images
+- [x] Images
 - [x] Templates
+- [x] Asides
+- [x] Details
 
 ## Installation
 
@@ -25,5 +28,5 @@ md can then be installed anywhere.
 
 ## Usage
 
-Run`jconsole run.ijs < file.md` to process a single file into HTML.
+Run `jconsole run.ijs < file.md` to process a single file into HTML.
 

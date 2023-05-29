@@ -211,7 +211,7 @@ processDetails =: {{
   'details' htmlElement summary , body
 }}
 
-NB. So far, only supports paragraphs, headers, lists, codeblocks, and asides.
+NB. So far, only supports paragraphs, headers, lists, codeblocks, asides, and details.
 regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + (4 * isAside) + 5 * isDetails
 processSection =: processPara`processHeader`processList`processCodeblock`processAside`processDetails @. regime
 
