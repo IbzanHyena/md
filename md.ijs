@@ -211,9 +211,12 @@ processDetails =: {{
   'details' htmlElement summary , body
 }}
 
-NB. So far, only supports paragraphs, headers, lists, codeblocks, asides, and details.
-regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + (4 * isAside) + 5 * isDetails
-processSection =: processPara`processHeader`processList`processCodeblock`processAside`processDetails @. regime
+isHorizontalRule =: (3 <: #) *. ([: *./ '-' = ])
+processHorizontalRule =: '<hr/>'"_
+
+NB. So far, only supports paragraphs, headers, lists, codeblocks, asides, details, and horizontal rules.
+regime =: isHeader + (2 * isUlist) + (3 * isCodeblock) + (4 * isAside) + (5 * isDetails) + (6 * isHorizontalRule)
+processSection =: processPara`processHeader`processList`processCodeblock`processAside`processDetails`processHorizontalRule @. regime
 
 NB. Start by prepending the delimiter.
 NB. Use <;.1 to split into boxed sections everywhere E. is 1
