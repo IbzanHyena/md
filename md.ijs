@@ -98,7 +98,7 @@ NB. i.e. '# ', '## ', etc.
 headers =: (>: i. 6) reps '';'#';' '
 NB. The HTML tag names for different headers.
 NB. i.e. h1LF, h2,LF, etc.
-htmlHs      =: >((,&LF)@('h'&,)@":)&.> >: i.6
+htmlHs      =: ((,&LF)@('h'&,)@":)@> >: i.6
 whichHeader =: headers&whichX
 isHeader    =: headers&isX
 
@@ -161,8 +161,8 @@ inlineFormatting =: {{
   NB. Remove leading + trailing char and then wrap in code
   bt =: inlineCode @: }. @: }: f.
 
-  pbt =: {{ ; (prest&.>)`(bt&.>)"0 (backtickrx&rxmatches rxcut ]) y }}
-  pdbt =: {{ ; (pbt&.>)`(dbt&.>)"0 (dbacktickrx&rxmatches rxcut ]) y }}
+  pbt =: {{ (prest@>)`(bt@>)"0 (backtickrx&rxmatches rxcut ]) y }}
+  pdbt =: {{ (pbt@>)`(dbt@>)"0 (dbacktickrx&rxmatches rxcut ]) y }}
   y =. pdbt y
 }}
 
@@ -243,7 +243,7 @@ NB. y: the string to split
 NB. returns: the references and remaining text, as a boxed array
 splitReferences =: {{
   lines =. LF strsplit y
-  refLines =. ; isRef&.> lines
+  refLines =. isRef@> lines
   refs =. lines #~ refLines
   lines =. LF joinstring lines #~ -. refLines
   refs =. _2 ]\ ; parseRef&.> refs
@@ -259,7 +259,7 @@ reflinkrx =: rxcomp '(?<!!)\[(.+?)\]\[(.+?)\]'
 NB. Replace links in text with HTML hyperlinks
 processLinks =: {{
   NB. Use rxapply to apply a verb to each match within a substring
-  makeInline =: {{ (>@[ htmlAhref >@])/ , inlinelinkrx 2 1 rxextract y }}
+  makeInline =: {{ (htmlAhref&>)/ , inlinelinkrx 2 1 rxextract y }}
   makeRef =: {{
     'name ref' =. , reflinkrx 1 2 rxextract y
     try.
