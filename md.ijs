@@ -98,7 +98,7 @@ NB. i.e. '# ', '## ', etc.
 headers =: (>: i. 6) reps '';'#';' '
 NB. The HTML tag names for different headers.
 NB. i.e. h1LF, h2,LF, etc.
-htmlHs      =: ((,&LF)@('h'&,)@":)@> >: i.6
+htmlHs      =: {{ 'h',(":y),LF }}"0 >: i.6
 whichHeader =: headers&whichX
 isHeader    =: headers&isX
 
